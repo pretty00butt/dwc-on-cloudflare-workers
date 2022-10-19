@@ -6,6 +6,10 @@ export const USER_ROLE = {
   USER: 2,
 };
 
+export interface Weather {
+  id: number;
+}
+
 export interface UserRole {
   id?: number;
   name: string;

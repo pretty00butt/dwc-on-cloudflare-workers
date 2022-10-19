@@ -35,16 +35,24 @@ export async function fetchOne<T>({
   where,
   select,
   tableName,
+  orderBy,
 }: {
-  where: { [key: string]: any };
+  where?: { [key: string]: any };
   select?: string;
   tableName: string;
+  orderBy?: [string, boolean];
 }): Promise<T | null> {
   const queryBuilder = supabase.from(tableName).select(select || "*");
 
-  Object.keys(where).forEach((key) => {
-    queryBuilder.eq(key, where[key]);
-  });
+  if (where) {
+    Object.keys(where).forEach((key) => {
+      queryBuilder.eq(key, where[key]);
+    });
+  }
+
+  if (orderBy) {
+    queryBuilder.order(orderBy[0], { ascending: orderBy[1] });
+  }
 
   const { data, error } = await queryBuilder.single();
   if (error && error.code !== NOT_FOUND_ERROR_CODE) {

@@ -4,6 +4,7 @@ import authController from "./controllers/auth.controller";
 import usersController from "./controllers/users.controller";
 import gardenSectionsController from "./controllers/garden-sections.controller";
 import creaturesController from "./controllers/creatures.controller";
+import weatherController from "./controllers/weather.controller";
 
 import authentication from "./middlewares/authentication";
 
@@ -45,6 +46,12 @@ router.get("/creatures/:id", authentication, creaturesController.findById);
 router.post("/creatures", authentication, withContent, creaturesController.save);
 router.put("/creatures/:id", withContent, creaturesController.update);
 router.delete("/creatures/:id", authentication, creaturesController.remove);
+
+/**
+ * Creatures
+ */
+router.get("/weather", authentication, weatherController.findLatest);
+router.post("/weather", authentication, withContent, weatherController.save);
 
 router.all("*", () => new Response("404, not found!", { status: 404 }));
 
