@@ -29,6 +29,16 @@ export const fetchById = async ({ id }: { id: number }): Promise<{ row: User | n
   return { row };
 };
 
+export const fetchByUid = async ({ uid }: { uid: string }): Promise<{ row: User | null }> => {
+  const row = await db.fetchOne<User>({
+    select:
+      "id, uid, email, username, role: role_id (id, name), gardenSection: garden_section_id (id, x, y, width, height)",
+    where: { uid },
+    tableName: "users",
+  });
+  return { row };
+};
+
 export const fetchByUsername = async (
   { username }: { username: string },
   options?: {

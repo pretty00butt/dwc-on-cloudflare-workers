@@ -17,9 +17,8 @@ export interface UserRole {
 
 export interface User {
   id?: number;
-  email: string;
+  uid: string;
   username: string;
-  password: string | undefined;
   garden_section_id: number | null;
   role_id: number | null;
   gardenSection?: GardenSection;

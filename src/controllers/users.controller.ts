@@ -2,9 +2,41 @@ import createHttpError from "http-errors";
 import httpStatus from "http-status";
 import { Request } from "itty-router";
 import { json } from "itty-router-extras";
-import { User } from "../interface";
+import { User, USER_ROLE } from "../interface";
 
-import { fetchById, fetchAll, update as updateUser } from "../services/users.service";
+import {
+  fetchByUid,
+  fetchById,
+  fetchAll,
+  fetchByUsername,
+  save as saveUser,
+  update as updateUser,
+} from "../services/users.service";
+
+export const create = async ({ content }: Request) => {
+  const { username } = content;
+  if (!username) {
+    throw createHttpError(httpStatus.BAD_REQUEST, "사용자이름 혹은 비밀번호를 확인해주세요.");
+  }
+
+  const resultWithUsername = await fetchByUsername({ username });
+  if (resultWithUsername.row) {
+    throw createHttpError(httpStatus.BAD_REQUEST, "이미 존재하는 사용자 이름입니다.");
+  }
+
+  const user: User = {
+    uid: content.uid,
+    username,
+    garden_section_id: null,
+    role_id: USER_ROLE.USER,
+  };
+
+  const { row: _user } = await saveUser({ user });
+
+  return json({
+    row: _user,
+  });
+};
 
 export const findAll = async ({ params }: Request) => {
   const { rows } = await fetchAll({ where: params });
@@ -21,6 +53,16 @@ export const findById = async ({ params }: Request) => {
   return json({ row });
 };
 
+export const findByUid = async ({ params }: Request) => {
+  if (!params?.id) {
+    throw createHttpError(httpStatus.BAD_REQUEST, "사용자 uid를 확인해주세요.");
+  }
+
+  const { row } = await fetchByUid({ uid: params.uid });
+
+  return json({ row });
+};
+
 export const update = async ({ content, params }: Request) => {
   if (!params?.id) {
     throw createHttpError(httpStatus.BAD_REQUEST, "사용자 id를 확인해주세요.");
@@ -33,7 +75,9 @@ export const update = async ({ content, params }: Request) => {
 };
 
 export default {
+  create,
   findAll,
   findById,
+  findByUid,
   update,
 };

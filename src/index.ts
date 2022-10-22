@@ -1,6 +1,6 @@
 import { ThrowableRouter, withContent } from "itty-router-extras";
 
-import authController from "./controllers/auth.controller";
+// import authController from "./controllers/auth.controller";
 import usersController from "./controllers/users.controller";
 import gardenSectionsController from "./controllers/garden-sections.controller";
 import creaturesController from "./controllers/creatures.controller";
@@ -20,14 +20,16 @@ router.get("/", authentication, () => {
 /**
  * Auth
  */
-router.post("/auth/signin", withContent, authController.signIn);
-router.post("/auth/signup", withContent, authController.signUp);
+// router.post("/auth/signin", withContent, authController.signIn);
+// router.post("/auth/signup", withContent, authController.signUp);
 
 /**
  * Users
  */
 router.get("/users/all", authentication, usersController.findAll);
 router.get("/users/:id", authentication, usersController.findById);
+router.get("/users/by-uid/:id", authentication, usersController.findByUid);
+router.post("/users", authentication, withContent, usersController.create);
 router.put("/users/:id", authentication, withContent, usersController.update);
 
 /**
