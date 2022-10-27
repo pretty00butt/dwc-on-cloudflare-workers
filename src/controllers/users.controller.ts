@@ -14,19 +14,11 @@ import {
 } from "../services/users.service";
 
 export const create = async ({ content }: Request) => {
-  const { username } = content;
-  if (!username) {
-    throw createHttpError(httpStatus.BAD_REQUEST, "사용자이름 혹은 비밀번호를 확인해주세요.");
-  }
-
-  const resultWithUsername = await fetchByUsername({ username });
-  if (resultWithUsername.row) {
-    throw createHttpError(httpStatus.BAD_REQUEST, "이미 존재하는 사용자 이름입니다.");
-  }
+  const { creatureName } = content;
 
   const user: User = {
     uid: content.uid,
-    username,
+    creatureName,
     garden_section_id: null,
     role_id: USER_ROLE.USER,
   };
@@ -58,7 +50,9 @@ export const findByUid = async ({ params }: Request) => {
     throw createHttpError(httpStatus.BAD_REQUEST, "사용자 uid를 확인해주세요.");
   }
 
-  const { row } = await fetchByUid({ uid: params.uid });
+  console.log("params uid: ", params.id);
+  console.log(params.id);
+  const { row } = await fetchByUid({ uid: params.id.trim() });
 
   return json({ row });
 };

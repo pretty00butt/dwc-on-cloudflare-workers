@@ -12,8 +12,8 @@ import {
   save as saveCreature,
 } from "../services/creatures.service";
 
-export const findAll = async ({ params }: Request) => {
-  const { rows } = await fetchAll({ where: params });
+export const findAll = async ({ query }: Request) => {
+  const { rows } = await fetchAll({ where: query });
   return json({ rows });
 };
 

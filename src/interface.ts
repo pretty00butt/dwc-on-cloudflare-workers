@@ -18,7 +18,7 @@ export interface UserRole {
 export interface User {
   id?: number;
   uid: string;
-  username: string;
+  creatureName: string;
   garden_section_id: number | null;
   role_id: number | null;
   gardenSection?: GardenSection;

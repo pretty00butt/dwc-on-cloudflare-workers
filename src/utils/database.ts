@@ -51,10 +51,10 @@ export async function fetchOne<T>({
   }
 
   if (orderBy) {
-    queryBuilder.order(orderBy[0], { ascending: orderBy[1] });
+    queryBuilder.order(orderBy[0], { ascending: orderBy[1], nullsFirst: false });
   }
 
-  const { data, error } = await queryBuilder.single();
+  const { data, error } = await queryBuilder.range(0, 0).single();
   if (error && error.code !== NOT_FOUND_ERROR_CODE) {
     throw createError(httpStatus.INTERNAL_SERVER_ERROR, `DATABASE 연결에 문제가 발생했습니다.\n${error.message}`);
   }
@@ -85,8 +85,20 @@ export async function fetchWithPagination<T>({
   return { rows: data as T[], totalCount: 0 };
 }
 
-export async function save<T>({ tableName, row }: { tableName: string; row: T }): Promise<{ row: T }> {
-  const { data, error } = await supabase.from(tableName).insert(row).select().single();
+export async function save<T>({
+  tableName,
+  row,
+  select,
+}: {
+  tableName: string;
+  row: T;
+  select?: string;
+}): Promise<{ row: T }> {
+  const { data, error } = await supabase
+    .from(tableName)
+    .insert(row)
+    .select(select || "*")
+    .single();
   if (error) {
     throw createError(httpStatus.INTERNAL_SERVER_ERROR, `DATABASE 연결에 문제가 발생했습니다.\n${error.message}`);
   }
@@ -98,12 +110,18 @@ export async function update<T>({
   id,
   tableName,
   row,
+  select,
 }: {
   id: number;
   tableName: string;
   row: T;
+  select?: string;
 }): Promise<{ rows: T[] }> {
-  const { error: _error } = await supabase.from(tableName).select().eq("id", id).single();
+  const { error: _error } = await supabase
+    .from(tableName)
+    .select(select || "*")
+    .eq("id", id)
+    .single();
 
   if (_error && _error.code === NOT_FOUND_ERROR_CODE) {
     throw createError(httpStatus.NOT_FOUND, `삭제하려는 정보를 찾을 수 없습니다.`);

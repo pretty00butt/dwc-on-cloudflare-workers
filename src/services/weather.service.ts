@@ -4,7 +4,7 @@ import * as db from "../utils/database";
 export const fetchLatest = async (): Promise<{ row: Weather }> => {
   const row = await db.fetchOne<Weather>({
     tableName: "weather",
-    orderBy: ["created_at", false],
+    orderBy: ["timestamp", false],
   });
 
   return { row: row as Weather };

@@ -13,16 +13,19 @@ function removePassword(user: User) {
 export const fetchAll = async ({ where }: { where?: { [key: string]: any } }): Promise<{ rows: User[] }> => {
   const rows = await db.fetch<User>({
     select:
-      "id, email, username, role: role_id (id, name), creature: creature_id (id, animated_properties, appearance, is_online), gardenSection: garden_section_id (id, x, y, width, height)",
+      "id, username, creatureName, role: role_id (id, name), creature: creature_id (*), gardenSection: garden_section_id (*)",
     where,
     tableName: "users",
   });
+
+  console.log("users");
+  console.log(rows);
   return { rows };
 };
 
 export const fetchById = async ({ id }: { id: number }): Promise<{ row: User | null }> => {
   const row = await db.fetchOne<User>({
-    select: "id, email, username, role: role_id (id, name), gardenSection: garden_section_id (id, x, y, width, height)",
+    select: "id, email, username, role: role_id (id, name), gardenSection: garden_section_id (*)",
     where: { id },
     tableName: "users",
   });
@@ -31,11 +34,13 @@ export const fetchById = async ({ id }: { id: number }): Promise<{ row: User | n
 
 export const fetchByUid = async ({ uid }: { uid: string }): Promise<{ row: User | null }> => {
   const row = await db.fetchOne<User>({
-    select:
-      "id, uid, email, username, role: role_id (id, name), gardenSection: garden_section_id (id, x, y, width, height)",
+    select: "id, uid, creatureName, username, role: role_id (id, name), gardenSection: garden_section_id (*)",
     where: { uid },
     tableName: "users",
   });
+
+  console.log("uid: ", uid);
+  console.log(row);
   return { row };
 };
 
@@ -46,9 +51,9 @@ export const fetchByUsername = async (
   }
 ): Promise<{ row: User | null }> => {
   let row = await db.fetchOne<User>({
-    select: `id, email, username, ${
+    select: `id, username, creatureName, ${
       options?.withPassword ? "password," : ""
-    } role: role_id (id, name), gardenSection: garden_section_id (id, x, y, width, height)`,
+    } role: role_id (id, name), gardenSection: garden_section_id (*)`,
     where: { username },
     tableName: "users",
   });
@@ -66,7 +71,7 @@ export const fetchUsersWithPagination = async ({
   pageSize: number;
 }): Promise<{ rows: User[]; totalCount: number }> => {
   const result = await db.fetchWithPagination<User>({
-    select: `id, email, username, role: role_id (id, name), gardenSection: garden_section_id (id, x, y, width, height)`,
+    select: `id, username, creatureName, role: role_id (id, name), gardenSection: garden_section_id (id, x, y, width, height)`,
     tableName: "users",
     page,
     pageSize,
@@ -83,7 +88,12 @@ export const save = async ({ user }: { user: User }) => {
 };
 
 export const update = async (id: number, user: User) => {
-  const result = await db.update<User>({ id, tableName: "users", row: user });
+  const result = await db.update<User>({
+    id,
+    tableName: "users",
+    row: user,
+    select: `id, username, creatureName, role: role_id (id, name), gardenSection: garden_section_id (id, x, y, width, height)`,
+  });
   return {
     rows: result.rows.map(removePassword),
   };

@@ -27,8 +27,8 @@ router.get("/", authentication, () => {
  * Users
  */
 router.get("/users/all", authentication, usersController.findAll);
-router.get("/users/:id", authentication, usersController.findById);
 router.get("/users/by-uid/:id", authentication, usersController.findByUid);
+router.get("/users/:id", authentication, usersController.findById);
 router.post("/users", authentication, withContent, usersController.create);
 router.put("/users/:id", authentication, withContent, usersController.update);
 
@@ -37,6 +37,7 @@ router.put("/users/:id", authentication, withContent, usersController.update);
  */
 router.get("/garden-sections/all", authentication, gardenSectionsController.findAll);
 router.get("/garden-sections/:id", authentication, gardenSectionsController.findById);
+router.post("/garden-sections", withContent, gardenSectionsController.create);
 router.put("/garden-sections/:id", authentication, withContent, gardenSectionsController.update);
 router.delete("/garden-sections/:id", authentication, gardenSectionsController.remove);
 
@@ -52,7 +53,7 @@ router.delete("/creatures/:id", authentication, creaturesController.remove);
 /**
  * Creatures
  */
-router.get("/weather", authentication, weatherController.findLatest);
+router.get("/weather/latest", authentication, weatherController.findLatest);
 router.post("/weather", authentication, withContent, weatherController.save);
 
 router.all("*", () => new Response("404, not found!", { status: 404 }));

@@ -8,10 +8,19 @@ import {
   fetchAll,
   update as updateGardenSection,
   remove as removeGardenSection,
+  save as saveGardenSection,
 } from "../services/garden-sections.service";
 
-export const findAll = async () => {
-  const { rows } = await fetchAll();
+export const create = async ({ content }: Request) => {
+  const { row } = await saveGardenSection({ gardenSection: content });
+
+  return json({
+    row,
+  });
+};
+
+export const findAll = async ({ query }: Request) => {
+  const { rows } = await fetchAll({ where: query });
   return json({ rows });
 };
 
@@ -45,6 +54,7 @@ export const remove = async ({ params }: Request) => {
 };
 
 export default {
+  create,
   findAll,
   findById,
   update,
