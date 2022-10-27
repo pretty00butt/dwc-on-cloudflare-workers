@@ -39,8 +39,6 @@ export const fetchByUid = async ({ uid }: { uid: string }): Promise<{ row: User 
     tableName: "users",
   });
 
-  console.log("uid: ", uid);
-  console.log(row);
   return { row };
 };
 

@@ -5,7 +5,7 @@ export const fetchAll = async (options?: { where?: { [key: string]: any } }): Pr
   const rows = await db.fetch<GardenSection>({
     tableName: "gardensections",
     select:
-      "id, owner: user_id (*), user: user_id (*), x, y, width, height, top_garden_id, bottom_garden_id, right_garden_id, left_garden_id, props",
+      "id, user_id, owner: user_id (*), user: user_id (*), x, y, width, height, top_garden_id, bottom_garden_id, right_garden_id, left_garden_id, props",
     where: options?.where,
   });
   return { rows };
@@ -14,7 +14,7 @@ export const fetchAll = async (options?: { where?: { [key: string]: any } }): Pr
 export const fetchById = async ({ id }: { id: number }): Promise<{ row: GardenSection | null }> => {
   const row = await db.fetchOne<GardenSection>({
     select:
-      "id, owner: user_id (*), user: user_id (*), x, y, width, height, top_garden_id, bottom_garden_id, right_garden_id, left_garden_id, props",
+      "id, user_id, owner: user_id (*), user: user_id (*), x, y, width, height, top_garden_id, bottom_garden_id, right_garden_id, left_garden_id, props",
     where: { id },
     tableName: "gardensections",
   });
@@ -25,7 +25,7 @@ export const fetchById = async ({ id }: { id: number }): Promise<{ row: GardenSe
 export const fetchOne = async (where: { [key: string]: any }): Promise<{ row: GardenSection | null }> => {
   const row = await db.fetchOne<GardenSection>({
     select:
-      "id, owner: user_id (*), user: user_id (*), x, y, width, height, top_garden_id, bottom_garden_id, right_garden_id, left_garden_id, props",
+      "id, user_id, owner: user_id (*), user: user_id (*), x, y, width, height, top_garden_id, bottom_garden_id, right_garden_id, left_garden_id, props",
     where,
     tableName: "gardensections",
   });
@@ -38,7 +38,7 @@ export const save = async ({ gardenSection }: { gardenSection: GardenSection }) 
     tableName: "gardensections",
     row: gardenSection,
     select:
-      "id, owner: user_id (*), user: user_id (*), x, y, width, height, top_garden_id, bottom_garden_id, right_garden_id, left_garden_id, props",
+      "id, user_id, owner: user_id (*), user: user_id (*), x, y, width, height, top_garden_id, bottom_garden_id, right_garden_id, left_garden_id, props",
   });
 };
 
@@ -48,7 +48,7 @@ export const update = async (id: number, gardenSection: GardenSection) => {
     tableName: "gardensections",
     row: gardenSection,
     select:
-      "id, owner: user_id (*), user: user_id (*), x, y, width, height, top_garden_id, bottom_garden_id, right_garden_id, left_garden_id, props",
+      "id, user_id, owner: user_id (*), user: user_id (*), x, y, width, height, top_garden_id, bottom_garden_id, right_garden_id, left_garden_id, props",
   });
 };
 
