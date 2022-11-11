@@ -9,6 +9,9 @@ import {
   update as updateGardenSection,
   remove as removeGardenSection,
   save as saveGardenSection,
+  fetchHighestPriorities,
+  fetchCharged,
+  fetchTheMostEdge,
 } from "../services/garden-sections.service";
 
 export const create = async ({ content }: Request) => {
@@ -24,6 +27,11 @@ export const findAll = async ({ query }: Request) => {
   return json({ rows });
 };
 
+export const findCharged = async ({ query }: Request) => {
+  const { rows } = await fetchCharged();
+  return json({ rows });
+};
+
 export const findById = async ({ params }: Request) => {
   if (!params?.id) {
     throw createHttpError(httpStatus.BAD_REQUEST, "가든 id를 확인해주세요.");
@@ -31,6 +39,16 @@ export const findById = async ({ params }: Request) => {
 
   const { row } = await fetchById({ id: Number(params.id) });
 
+  return json({ row });
+};
+
+export const findHighestPriority = async () => {
+  const { row } = await fetchHighestPriorities();
+  return json({ row });
+};
+
+export const findTheMostEdge = async () => {
+  const { row } = await fetchTheMostEdge();
   return json({ row });
 };
 
@@ -56,7 +74,10 @@ export const remove = async ({ params }: Request) => {
 export default {
   create,
   findAll,
+  findCharged,
   findById,
+  findHighestPriority,
+  findTheMostEdge,
   update,
   remove,
 };

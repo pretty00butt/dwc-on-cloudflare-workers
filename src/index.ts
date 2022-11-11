@@ -31,11 +31,15 @@ router.get("/users/by-uid/:id", authentication, usersController.findByUid);
 router.get("/users/:id", authentication, usersController.findById);
 router.post("/users", authentication, withContent, usersController.create);
 router.put("/users/:id", authentication, withContent, usersController.update);
+router.put("/users/:id/garden-sections", authentication, withContent, usersController.assignGardenSection);
 
 /**
  * GardenSections
  */
 router.get("/garden-sections/all", authentication, gardenSectionsController.findAll);
+router.get("/garden-sections/charged", authentication, gardenSectionsController.findCharged);
+router.get("/garden-sections/highest-priority", authentication, gardenSectionsController.findHighestPriority);
+router.get("/garden-sections/the-most-edge", authentication, gardenSectionsController.findTheMostEdge);
 router.get("/garden-sections/:id", authentication, gardenSectionsController.findById);
 router.post("/garden-sections", withContent, gardenSectionsController.create);
 router.put("/garden-sections/:id", authentication, withContent, gardenSectionsController.update);

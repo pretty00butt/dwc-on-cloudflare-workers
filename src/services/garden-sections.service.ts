@@ -30,7 +30,25 @@ export const fetchOne = async (where: { [key: string]: any }): Promise<{ row: Ga
   return { row };
 };
 
+export const fetchCharged = async (): Promise<{ rows: GardenSection[] | null }> => {
+  const rows = await db.fetchByRunFn<GardenSection>({ functionName: "find_charged" });
+  return { rows };
+};
+
+export const fetchHighestPriorities = async (): Promise<{ row: GardenSection | null }> => {
+  const row = await db.fetchOneByRunFn<GardenSection>({ functionName: "find_highest_priority_garden" });
+  return { row };
+};
+
+export const fetchTheMostEdge = async (): Promise<{ row: GardenSection | null }> => {
+  const row = await db.fetchOneByRunFn<GardenSection>({ functionName: "find_the_most_edge_garden" });
+  return { row };
+};
+
 export const save = async ({ gardenSection }: { gardenSection: GardenSection }) => {
+  delete gardenSection.tileProps;
+  delete gardenSection.shaderProps;
+
   return db.save<GardenSection>({
     tableName: "gardensections",
     row: gardenSection,
@@ -39,6 +57,9 @@ export const save = async ({ gardenSection }: { gardenSection: GardenSection }) 
 };
 
 export const update = async (id: number, gardenSection: GardenSection) => {
+  delete gardenSection.tileProps;
+  delete gardenSection.shaderProps;
+
   return db.update<GardenSection>({
     id,
     tableName: "gardensections",

@@ -62,6 +62,28 @@ export async function fetchOne<T>({
   return data as T;
 }
 
+export async function fetchByRunFn<T>({ functionName }: { functionName: string }): Promise<T[] | null> {
+  const queryBuilder = supabase.rpc(functionName);
+
+  const { data, error } = await queryBuilder;
+  if (error && error.code !== NOT_FOUND_ERROR_CODE) {
+    throw createError(httpStatus.INTERNAL_SERVER_ERROR, `DATABASE 연결에 문제가 발생했습니다.\n${error.message}`);
+  }
+
+  return data as T[];
+}
+
+export async function fetchOneByRunFn<T>({ functionName }: { functionName: string }): Promise<T | null> {
+  const queryBuilder = supabase.rpc(functionName);
+
+  const { data, error } = await queryBuilder;
+  if (error && error.code !== NOT_FOUND_ERROR_CODE) {
+    throw createError(httpStatus.INTERNAL_SERVER_ERROR, `DATABASE 연결에 문제가 발생했습니다.\n${error.message}`);
+  }
+
+  return data ? data[0] : null;
+}
+
 export async function fetchWithPagination<T>({
   select,
   tableName,

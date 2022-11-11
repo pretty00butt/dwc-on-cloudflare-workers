@@ -51,27 +51,22 @@ export interface GardenSection {
   y: number;
   width: number;
   height: number;
-  top_garden_id: number;
-  bottom_garden_id: number;
-  left_garden_id: number;
-  right_garden_id: number;
   user_id?: number;
   props: {
     tiles: CurrTile[][];
     shader: Shader;
   };
+  tileProps?: any;
+  shaderProps?: any;
 }
 
 export const DEFAULT_GARDEN_SECTION = {
   id: 0,
   x: 0,
   y: 0,
+  index: 0,
   width: 0,
   height: 0,
-  top_garden_id: 0,
-  bottom_garden_id: 0,
-  left_garden_id: 0,
-  right_garden_id: 0,
   props: {
     tiles: [],
     shader: {

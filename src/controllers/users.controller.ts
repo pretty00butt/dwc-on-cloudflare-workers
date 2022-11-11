@@ -4,14 +4,47 @@ import { Request } from "itty-router";
 import { json } from "itty-router-extras";
 import { User, USER_ROLE } from "../interface";
 
-import {
-  fetchByUid,
-  fetchById,
-  fetchAll,
-  fetchByUsername,
-  save as saveUser,
-  update as updateUser,
-} from "../services/users.service";
+import { fetchByUid, fetchById, fetchAll, save as saveUser, update as updateUser } from "../services/users.service";
+import * as gardensService from "../services/garden-sections.service";
+
+export const assignGardenSection = async ({ params }: Request) => {
+  if (!params?.id) {
+    throw createHttpError(httpStatus.BAD_REQUEST, "사용자 id를 확인해주세요.");
+  }
+
+  const userId = Number(params.id);
+
+  const { row: _user } = await fetchById({ id: userId });
+
+  if (!_user) {
+    throw createHttpError(httpStatus.BAD_REQUEST, "사용자 id를 확인해주세요.");
+  }
+
+  const { row: _garden } = await gardensService.fetchHighestPriorities();
+  if (!_garden) {
+    throw createHttpError(httpStatus.BAD_REQUEST, "빈 가든이 존재하지 않습니다.");
+  }
+
+  const [{ rows: userRows }] = await Promise.all([
+    updateUser(userId, {
+      ..._user,
+      garden_section_id: _garden.id,
+    }),
+    gardensService.update(_garden.id as number, {
+      ..._garden,
+      user_id: userId,
+    }),
+  ]);
+
+  const row = userRows[0];
+  _garden.user_id = _user.id;
+  _garden.user = _user;
+  row.gardenSection = _garden;
+
+  return json({
+    row: userRows[0],
+  });
+};
 
 export const create = async ({ content }: Request) => {
   const { creatureName } = content;
@@ -69,6 +102,7 @@ export const update = async ({ content, params }: Request) => {
 };
 
 export default {
+  assignGardenSection,
   create,
   findAll,
   findById,

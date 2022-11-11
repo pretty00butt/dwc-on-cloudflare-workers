@@ -3,8 +3,7 @@ import * as db from "../utils/database";
 
 export const fetchAll = async (options?: { where?: { [key: string]: any } }): Promise<{ rows: Creature[] }> => {
   const rows = await db.fetch<Creature>({
-    select:
-      "id,owner: user_id (*), user: user_id (id, username, uid, creatureName), is_online, appearance, animated_properties",
+    select: "id,owner: user_id (*), user: user_id (id, uid, creatureName), is_online, appearance, animated_properties",
     tableName: "creatures",
     where: options?.where,
   });
@@ -15,7 +14,7 @@ export const fetchAll = async (options?: { where?: { [key: string]: any } }): Pr
 export const fetchById = async ({ id }: { id: number }): Promise<{ row: Creature | null }> => {
   const row = await db.fetchOne<Creature>({
     select:
-      "id, owner: user_id (*),  user: user_id (id, username, uid, creatureName), is_online, appearance, animated_properties",
+      "id, owner: user_id (*),  user: user_id (id, uid, creatureName), is_online, appearance, animated_properties",
     where: { id },
     tableName: "creatures",
   });
@@ -28,7 +27,7 @@ export const save = async ({ creature }: { creature: Creature }) => {
     tableName: "creatures",
     row: creature,
     select:
-      "id, owner: user_id (*),  user: user_id (id, username, uid, creatureName), is_online, appearance, animated_properties",
+      "id, owner: user_id (*),  user: user_id (id, uid, creatureName), is_online, appearance, animated_properties",
   });
 };
 
@@ -38,7 +37,7 @@ export const update = async (id: number, creature: Creature) => {
     tableName: "creatures",
     row: creature,
     select:
-      "id, owner: user_id (*),  user: user_id (id, username, uid, creatureName), is_online, appearance, animated_properties",
+      "id, owner: user_id (*),  user: user_id (id, uid, creatureName), is_online, appearance, animated_properties",
   });
 };
 
